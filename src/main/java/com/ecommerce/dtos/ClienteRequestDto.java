@@ -26,8 +26,4 @@ public class ClienteRequestDto {
 	@NotBlank(message = "Senha do cliente é obrigatória.")
 	private String senha;
 
-	public String getNome() {
-		return nome;
-	}
-
 }
