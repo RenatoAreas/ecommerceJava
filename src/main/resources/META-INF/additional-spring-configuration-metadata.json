@@ -13,5 +13,20 @@
     "name": "jwt.expiration",
     "type": "java.lang.String",
     "description": "A description for 'jwt.expiration'"
+  },
+  {
+    "name": "spring.kafka.producer.group-id",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.kafka.producer.group-id'"
+  },
+  {
+    "name": "topic.name.producer",
+    "type": "java.lang.String",
+    "description": "A description for 'topic.name.producer'"
+  },
+  {
+    "name": "auto-create.topics.enable",
+    "type": "java.lang.String",
+    "description": "A description for 'auto-create.topics.enable'"
   }
 ]}

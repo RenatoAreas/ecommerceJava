@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.dtos.ClienteRequestDto;
 import com.ecommerce.dtos.ClienteResponseDto;
+import com.ecommerce.dtos.EmailMessageDto;
+import com.ecommerce.helpers.ClienteEmailHelper;
 import com.ecommerce.models.Cliente;
+import com.ecommerce.producers.EmailMessageProducer;
 import com.ecommerce.services.ClienteService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +29,12 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteService clienteService;
+
+	@Autowired
+	private EmailMessageProducer emailMessageProducer;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@ApiOperation("Serviço para cadastro de clientes.")
 	@PostMapping("/v1/clientes")
@@ -41,10 +52,21 @@ public class ClienteController {
 			clienteResponse.setData(cliente);
 
 			status = HttpStatus.CREATED;
+
+			// enviando mensagem
+			EmailMessageDto emailMessage = ClienteEmailHelper.gerarMensagemDeCriacaoDeConta(cliente);
+			String message = objectMapper.writeValueAsString(emailMessage);
+			emailMessageProducer.send(message);
+
 		} catch (IllegalArgumentException e) {
 
 			clienteResponse.setMessage(e.getMessage());
 			status = HttpStatus.BAD_REQUEST;
+		} catch (JsonProcessingException e) {
+
+			e.printStackTrace();
+			clienteResponse.setMessage(e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 
 		return ResponseEntity.status(status).body(clienteResponse);
